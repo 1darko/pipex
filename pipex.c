@@ -117,8 +117,9 @@ int	main(int ac, char **av, char **env)
 		child_worker(av, end, env);
 	else
 	{
+		waitpid(!parent, NULL, 0);
 		parent_worker(av, end, env);
-		wait(&status);
+		waitpid(parent, &status, 0);
 		if (status != 0)
 		{
 			exit(EXIT_FAILURE);
@@ -126,3 +127,4 @@ int	main(int ac, char **av, char **env)
 	}
 	exit(EXIT_SUCCESS);
 }
+
