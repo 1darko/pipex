@@ -6,7 +6,7 @@
 /*   By: dakojic <dakojic@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 10:10:38 by dakojic           #+#    #+#             */
-/*   Updated: 2024/02/05 11:32:36 by dakojic          ###   ########.fr       */
+/*   Updated: 2024/02/05 12:44:08 by dakojic          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,6 @@ int	main(int ac, char **av, char **env)
 		wait(&status);
 		if (status != 0)
 		{	
-			// close(0);
-			// close(1);
 			exit(EXIT_FAILURE);
 		}
 	}	
