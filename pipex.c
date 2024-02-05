@@ -6,7 +6,7 @@
 /*   By: dakojic <dakojic@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 10:10:38 by dakojic           #+#    #+#             */
-/*   Updated: 2024/02/05 12:44:08 by dakojic          ###   ########.fr       */
+/*   Updated: 2024/02/05 12:50:32 by dakojic          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	launcher(char *av, char **env)
 		exit(1);
 	}
 	if (execve(path, arguments, env) == -1)
-	{	
+	{
 		ft_putstr_fd("pipex: command not found: ", 2);
 		ft_putstr_fd(arguments[0], 2);
 		ft_putstr_fd("\n", 2);
@@ -48,14 +48,14 @@ static int	open_fd(char *av, int check)
 
 	fd = 0;
 	if (check == 0)
-	{	
+	{
 		if (access(av, F_OK))
 		{
 			perror(av);
 			exit(1);
 		}
 		fd = open(av, O_RDONLY);
-	}	
+	}
 	else if (check == 1)
 		fd = open(av, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
@@ -116,13 +116,13 @@ int	main(int ac, char **av, char **env)
 	if (!parent)
 		child_worker(av, end, env);
 	else
-	{	
+	{
 		parent_worker(av, end, env);
 		wait(&status);
 		if (status != 0)
-		{	
+		{
 			exit(EXIT_FAILURE);
 		}
-	}	
+	}
 	exit(EXIT_SUCCESS);
 }
