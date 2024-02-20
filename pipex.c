@@ -6,7 +6,7 @@
 /*   By: dakojic <dakojic@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/30 10:10:38 by dakojic           #+#    #+#             */
-/*   Updated: 2024/02/05 12:50:32 by dakojic          ###   ########.fr       */
+/*   Updated: 2024/02/20 15:41:14 by dakojic          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,15 @@ static void	launcher(char *av, char **env)
 		free_array(arguments);
 		exit(1);
 	}
-	if (execve(path, arguments, env) == -1)
-	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putstr_fd(arguments[0], 2);
-		ft_putstr_fd("\n", 2);
-		if (arguments)
-			free_array(arguments);
-		if (!env[0])
-			exit(1);
-		exit(127);
-	}
+	execve(path, arguments, env);
+	ft_putstr_fd("pipex: command not found: ", 2);
+	ft_putstr_fd(arguments[0], 2);
+	ft_putstr_fd("\n", 2);
+	if (arguments)
+		free_array(arguments);
+	if (!env[0])
+		exit(1);
+	exit(127);
 }
 
 static int	open_fd(char *av, int check)
@@ -100,31 +98,65 @@ static void	parent_worker(char **av, int *end, char **env)
 	return ;
 }
 
+// int	main(int ac, char **av, char **env)
+// {
+// 	int		status;
+// 	int		end[2];
+// 	pid_t	parent;
+
+// 	if (ac != 5)
+// 		err_display(0, 0);
+// 	if (pipe(end) == -1)
+// 		err_display(1, errno);
+// 	parent = fork();
+// 	if (parent == -1)
+// 		err_display(2, errno);
+// 	if (!parent)
+// 		child_worker(av, end, env);
+// 	else
+// 	{
+
+// 	}
+
+// 	exit(EXIT_SUCCESS);
+// }
+
 int	main(int ac, char **av, char **env)
 {
 	int		status;
 	int		end[2];
-	pid_t	parent;
-
+	pid_t	first;
+	pid_t	second;
 	if (ac != 5)
 		err_display(0, 0);
 	if (pipe(end) == -1)
 		err_display(1, errno);
-	parent = fork();
-	if (parent == -1)
+	first = fork();
+	if (first == -1)
 		err_display(2, errno);
-	if (!parent)
+	if (!first)
+	{
 		child_worker(av, end, env);
+
+	}
 	else
 	{
-		waitpid(!parent, NULL, 0);
-		parent_worker(av, end, env);
-		waitpid(parent, &status, 0);
-		if (status != 0)
+		second = fork();
+		if(second == -1)
+			err_display(2, errno);
+		if(!second)
 		{
-			exit(EXIT_FAILURE);
+			parent_worker(av, end, env);
 		}
-	}
+		else
+		{
+			close(end[0]);
+			close(end[1]);
+			waitpid(first, NULL, 0);
+			wait(&status);
+			if(status != 0)
+				exit(1);
+		}
+	}	
 	exit(EXIT_SUCCESS);
 }
-
